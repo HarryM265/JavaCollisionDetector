@@ -33,6 +33,7 @@ public class Panel extends JPanel implements Runnable {
     int bouncingRectX = bouncingRectStartLoc;
     int bouncingRectY = bouncingRectStartLoc;
     
+    //Speed of the bouncing rectangle
     int bouncingRectSpeedX = screenWidth/100;
     int bouncingRectSpeedY = screenHeight/160;
 
