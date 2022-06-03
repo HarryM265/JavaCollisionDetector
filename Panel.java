@@ -100,12 +100,6 @@ public class Panel extends JPanel implements Runnable {
     }
 
     public void update() {
-        //Add Movement Code
-    }
-
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
         // x-axis movement controller
         //If I keep moving in my current X direction, will I collide with the centre rectangle?
         if (bouncingRectX + bouncingRectWidth + bouncingRectSpeedX > centreRectX && 
@@ -133,6 +127,10 @@ public class Panel extends JPanel implements Runnable {
         //Movement Code
         bouncingRectX += bouncingRectSpeedX;
         bouncingRectY += bouncingRectSpeedY;
+    }
+
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
   
         Graphics2D centreRect = (Graphics2D)g;
         centreRect.setColor(Color.WHITE);
