@@ -65,6 +65,7 @@ public class Panel extends JPanel implements Runnable {
 
     @Override
     public void run() {
+        // START delta style game loop
         double drawInterval = 1000000000 / fps;
         double delta = 0;
         // 1,000,000,000 nano seconds = 1 second
@@ -89,7 +90,9 @@ public class Panel extends JPanel implements Runnable {
             delta--;
             drawCount++;
             }
+            // END delta style game loop
 
+            //Print the fps count to the console
             if (timer >= 1000000000) {
                 System.out.println("FPS: " + drawCount);
                 drawCount = 0;
