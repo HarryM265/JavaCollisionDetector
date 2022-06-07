@@ -105,26 +105,44 @@ public class Panel extends JPanel implements Runnable {
     public void update() {
         // x-axis movement controller
         //If I keep moving in my current X direction, will I collide with the centre rectangle?
-        if (bouncingRectX + bouncingRectWidth + bouncingRectSpeedX > centreRectX && 
+        if (
+            //If where the right of bouncing rect is going to be, is greater than the centre rect's left side AND
+            bouncingRectX + bouncingRectWidth + bouncingRectSpeedX > centreRectX &&
+            //If where the left side of where bouncing rect is going to be, is less than centre rect's right side AND
             bouncingRectX + bouncingRectSpeedX < centreRectX + centreRectWidth && 
+            //If the bottom of the bouncing rect is greater than the centre rect's top AND
             bouncingRectY + bouncingRectHeight > centreRectY && 
-            bouncingRectY < centreRectY + centreRectHeight) {
+            //If the top of the bouncing rect is less than centre rect's bottom THEN
+            bouncingRectY < centreRectY + centreRectHeight
+            ) {
+            //Invert the x-axis movement
             bouncingRectSpeedX *= -1;
+            System.out.println("Inverted left-right (BOX)");
         //Bounce off the left and right of the screen
         } else if (bouncingRectX < 0 || bouncingRectX + bouncingRectWidth > screenWidth) {
             bouncingRectSpeedX *= -1;
+            System.out.println("Inverted left-right (WALL)");
         }
 
         // y-axis movement controller
         //If I keep moving in my current Y direction, will I collide with the centre rectangle?
-        if (bouncingRectX + bouncingRectWidth > centreRectX && 
+        if (
+            //If bouncing rect;s right side is past the centre rect;s left side AND
+            bouncingRectX + bouncingRectWidth > centreRectX && 
+            //If bouncing rect's left side is less than centre rect's right side AND
             bouncingRectX < centreRectX + centreRectWidth && 
+            //If where the bottom of where bouncing rect is going to be, is greater than the centre rect's top AND
             bouncingRectY + bouncingRectHeight + bouncingRectSpeedY > centreRectY && 
-            bouncingRectY + bouncingRectSpeedY < centreRectY + centreRectHeight) {
+            //If the top of where the bouncing rect is going to be, is less than centre rect's bottom side THEN
+            bouncingRectY + bouncingRectSpeedY < centreRectY + centreRectHeight
+            ) {
+            //Invert the y-axis movement
             bouncingRectSpeedY *= -1;
+            System.out.println("Inverted up-down (BOX)");
         //Bounce off the top and bottom edges of the screen
         } else if (bouncingRectY < 0 || bouncingRectY + bouncingRectHeight > screenHeight) {
             bouncingRectSpeedY *= -1;
+            System.out.println("Inverted up-down (WALL)");
         }
 
         //Movement Code
