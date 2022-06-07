@@ -26,6 +26,8 @@ public class Panel extends JPanel implements Runnable {
 
     //BouncingRect starting location
     final int bouncingRectStartLoc = 5;
+
+    //REMOVE LATER
     //BouncingRect dimensions
     final int bouncingRectWidth  = screenWidth/20;
     final int bouncingRectHeight = screenHeight/20;
@@ -36,6 +38,9 @@ public class Panel extends JPanel implements Runnable {
     //Speed of the bouncing rectangle
     int bouncingRectSpeedX = screenWidth/100;
     int bouncingRectSpeedY = screenHeight/160;
+    //END REMOVE LATER
+
+    BounceBox bouncer = new BounceBox(screenWidth/20, screenHeight/20, 5, 5, screenWidth/100, screenHeight/160);
 
     //FPS
     int fps = 60;
@@ -107,20 +112,20 @@ public class Panel extends JPanel implements Runnable {
         //If I keep moving in my current X direction, will I collide with the centre rectangle?
         if (
             //If where the right of bouncing rect is going to be, is greater than the centre rect's left side AND
-            bouncingRectX + bouncingRectWidth + bouncingRectSpeedX > centreRectX &&
+            bouncer.FutureBoxRight() > centreRectX &&
             //If where the left side of where bouncing rect is going to be, is less than centre rect's right side AND
-            bouncingRectX + bouncingRectSpeedX < centreRectX + centreRectWidth && 
+            bouncer.FutureBoxLeft() < centreRectX + centreRectWidth && 
             //If the bottom of the bouncing rect is greater than the centre rect's top AND
-            bouncingRectY + bouncingRectHeight > centreRectY && 
+            bouncer.BoxBottom() > centreRectY && 
             //If the top of the bouncing rect is less than centre rect's bottom THEN
-            bouncingRectY < centreRectY + centreRectHeight
+            bouncer.BoxTop() < centreRectY + centreRectHeight
             ) {
             //Invert the x-axis movement
-            bouncingRectSpeedX *= -1;
+            bouncer.invX();
             System.out.println("Inverted left-right (BOX)");
         //Bounce off the left and right of the screen
-        } else if (bouncingRectX < 0 || bouncingRectX + bouncingRectWidth > screenWidth) {
-            bouncingRectSpeedX *= -1;
+        } else if (bouncer.BoxLeft() < 0 || bouncer.BoxRight() > screenWidth) {
+            bouncer.invX();
             System.out.println("Inverted left-right (WALL)");
         }
 
@@ -128,26 +133,26 @@ public class Panel extends JPanel implements Runnable {
         //If I keep moving in my current Y direction, will I collide with the centre rectangle?
         if (
             //If bouncing rect;s right side is past the centre rect;s left side AND
-            bouncingRectX + bouncingRectWidth > centreRectX && 
+            bouncer.BoxRight() > centreRectX && 
             //If bouncing rect's left side is less than centre rect's right side AND
-            bouncingRectX < centreRectX + centreRectWidth && 
+            bouncer.BoxLeft() < centreRectX + centreRectWidth && 
             //If where the bottom of where bouncing rect is going to be, is greater than the centre rect's top AND
-            bouncingRectY + bouncingRectHeight + bouncingRectSpeedY > centreRectY && 
+            bouncer.FutureBoxBottom() > centreRectY && 
             //If the top of where the bouncing rect is going to be, is less than centre rect's bottom side THEN
-            bouncingRectY + bouncingRectSpeedY < centreRectY + centreRectHeight
+            bouncer.FutureBoxTop() < centreRectY + centreRectHeight
             ) {
             //Invert the y-axis movement
-            bouncingRectSpeedY *= -1;
+            bouncer.invY();
             System.out.println("Inverted up-down (BOX)");
         //Bounce off the top and bottom edges of the screen
-        } else if (bouncingRectY < 0 || bouncingRectY + bouncingRectHeight > screenHeight) {
-            bouncingRectSpeedY *= -1;
+        } else if (bouncer.BoxTop() < 0 || bouncer.BoxBottom() > screenHeight) {
+            bouncer.invY();
             System.out.println("Inverted up-down (WALL)");
         }
 
         //Movement Code
-        bouncingRectX += bouncingRectSpeedX;
-        bouncingRectY += bouncingRectSpeedY;
+        bouncer.moveX();
+        bouncer.moveY();
     }
 
     public void paintComponent(Graphics g) {
@@ -161,7 +166,7 @@ public class Panel extends JPanel implements Runnable {
         Graphics2D bouncingRect = (Graphics2D)g;
         bouncingRect.setColor(Color.BLACK);
 
-        bouncingRect.fillRect(bouncingRectX, bouncingRectY, bouncingRectWidth, bouncingRectHeight);
+        bouncingRect.fillRect(bouncer.BoxLeft(), bouncer.BoxBottom(), bouncer.getWidth(), bouncer.getHeight());
 
         // disposal of this graphics context and stop using system resources
         centreRect.dispose();

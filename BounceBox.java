@@ -24,6 +24,14 @@ public class BounceBox {
         this.y += this.speedY;
     }
 
+    public void invX() {
+        this.speedX *= -1;
+    }
+
+    public void invY() {
+        this.speedY *= -1;
+    }
+
     public int getWidth() {
         return this.width;
     }
@@ -55,7 +63,7 @@ public class BounceBox {
     }
 
     //Future box location
-    
+
     public int FutureBoxRight() {
         int futureBoxRight = this.x + this.width + this.speedX;
         return futureBoxRight;
