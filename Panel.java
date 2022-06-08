@@ -25,7 +25,15 @@ public class Panel extends JPanel implements Runnable {
     int bouncingRectSpeedX = screenWidth/180;
     int bouncingRectSpeedY = screenHeight/320;
 
+    int startPointer = 0;
+
     Box bouncer = new Box(bouncingRectStartLoc, bouncingRectStartLoc, bouncingRectWidth, bouncingRectHeight);
+/*
+    Box[] boxes;
+    public Box[] createBoxes() {
+
+    }
+*/
 
     int numColours = 10;
 
@@ -45,6 +53,7 @@ public class Panel extends JPanel implements Runnable {
         return Colors;
     }
     int colourIndex = 0;
+    Color[] colours;
     
     //FPS
     int fps = 60;
@@ -84,6 +93,12 @@ public class Panel extends JPanel implements Runnable {
             delta += (currentTime - lastTime) / drawInterval;// Find how much time has passed and divide it by the draw interval
             timer += (currentTime - lastTime);
             lastTime = currentTime;
+
+            //ONLY GEN ONCE
+            if (startPointer == 0) {
+                colours = createColours();
+                startPointer += 1;
+            }
 
             //When delta reaches the draw interval, draw and update, then reset the delta
             if (delta >= 1) {
@@ -132,7 +147,6 @@ public class Panel extends JPanel implements Runnable {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Color[] colours = createColours();
 
         Graphics2D bouncingRect = (Graphics2D)g;
         bouncingRect.setColor(colours[colourIndex % 10]);
