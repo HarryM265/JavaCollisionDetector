@@ -23,4 +23,11 @@ public class Box {
     public int height() {
         return this.height;
     }
+
+    public void moveX(int pmove) {
+        this.x += pmove;
+    }
+    public void moveY(int pmove) {
+        this.y += pmove;
+    }
 }

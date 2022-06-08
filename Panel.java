@@ -28,6 +28,8 @@ public class Panel extends JPanel implements Runnable {
     int bouncingRectSpeedX = screenWidth/180;
     int bouncingRectSpeedY = screenHeight/320;
 
+    Box bouncer = new Box(bouncingRectStartLoc, bouncingRectStartLoc, bouncingRectWidth, bouncingRectHeight);
+
     int numColours = 10;
 
     public static Color[] createColours() {
@@ -47,7 +49,6 @@ public class Panel extends JPanel implements Runnable {
     }
     int colourIndex = 0;
     
-
     //FPS
     int fps = 60;
 
@@ -66,7 +67,6 @@ public class Panel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);// All drawing from this component will be performed on an off-screen painting buffer
         this.addKeyListener(keyH);
         this.setFocusable(true);// this game panel can be 'focused' to recieve key input
-
     }
 
     public void startGameThread() {
@@ -116,7 +116,7 @@ public class Panel extends JPanel implements Runnable {
     public void update() {
         // x-axis movement controller
         //Bounce off the left and right of the screen
-        if (bouncingRectX < 0 || bouncingRectX + bouncingRectWidth > screenWidth) {
+        if (bouncer.x() < 0 || bouncer.x() + bouncer.width() > screenWidth) {
             bouncingRectSpeedX *= -1;
             colourIndex += 1;
             System.out.println("Inverted left-right (WALL)");
@@ -125,7 +125,7 @@ public class Panel extends JPanel implements Runnable {
 
         // y-axis movement controller       
         //Bounce off the top and bottom edges of the screen
-         if (bouncingRectY < 0 || bouncingRectY + bouncingRectHeight > screenHeight) {
+         if (bouncer.y() < 0 || bouncer.y() + bouncer.height() > screenHeight) {
             bouncingRectSpeedY *= -1;
             colourIndex += 1;
             System.out.println("Inverted up-down (WALL)");
@@ -133,20 +133,18 @@ public class Panel extends JPanel implements Runnable {
         }
 
         //Movement Code
-        bouncingRectX += bouncingRectSpeedX;
-        bouncingRectY += bouncingRectSpeedY;
+        bouncer.moveX(bouncingRectSpeedX);
+        bouncer.moveY(bouncingRectSpeedY);
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Color[] colours = createColours();
 
-        Color currentColor = colours[colourIndex % 10];
-
         Graphics2D bouncingRect = (Graphics2D)g;
-        bouncingRect.setColor(currentColor);
+        bouncingRect.setColor(colours[colourIndex % 10]);
 
-        bouncingRect.fillRect(bouncingRectX, bouncingRectY, bouncingRectWidth, bouncingRectHeight);
+        bouncingRect.fillRect(bouncer.x(), bouncer.y(), bouncer.width(), bouncer.height());
 
         // disposal of this graphics context and stop using system resources
         bouncingRect.dispose();
