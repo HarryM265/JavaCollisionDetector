@@ -12,18 +12,9 @@ public class Panel extends JPanel implements Runnable {
     final int halfScreenWidth = (int)(screenWidth/2);
     final int halfScreenHeight = (int)(screenHeight/2);
 
-    //BouncingRect starting location
-    final int bouncingRectStartLoc = 5;
     //BouncingRect dimensions
     final int bouncingRectWidth  = screenWidth/14;
     final int bouncingRectHeight = screenHeight/9;
-    //BouncingRect location
-    int bouncingRectX = bouncingRectStartLoc;
-    int bouncingRectY = bouncingRectStartLoc;
-    
-    //Speed of the bouncing rectangle
-    int bouncingRectSpeedX = screenWidth/180;
-    int bouncingRectSpeedY = screenHeight/320;
 
     int startPointer = 0;
 
