@@ -18,9 +18,10 @@ public class Panel extends JPanel implements Runnable {
 
     int startPointer = 0;
 
+    static int numBoxes = 50000;
     Box[] boxes;
     public Box[] createBoxes() {
-        Box[] boxes = new Box[2];
+        Box[] boxes = new Box[numBoxes];
         for (int i = 0; i < boxes.length; i++) {
             int randX = randoNum(0, screenWidth/3);
             int randY = randoNum(0, screenHeight/3);
@@ -32,7 +33,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     static int numColours = 10;
-
+    Color[] colours;
     public static Color[] createColours() {
         Color[] Colors = new Color[numColours];
         Colors[0] = Color.BLUE;
@@ -48,7 +49,6 @@ public class Panel extends JPanel implements Runnable {
         return Colors;
     }
     int colourIndex = 0;
-    Color[] colours;
     
     //FPS
     int fps = 60;
@@ -125,8 +125,8 @@ public class Panel extends JPanel implements Runnable {
                 boxes[i].invSpedX();
                 colourIndex += 1;
                 boxes[i].changeColour(colours[colourIndex%10]);
-                System.out.println("Box #" + i + " inverted left-right (WALL)");
-                System.out.println("Current colour index: " + colourIndex%10);
+                //System.out.println("Box #" + i + " inverted left-right (WALL)");
+                //System.out.println("Current colour index: " + colourIndex%10);
             }
             // y-axis movement controller       
             //Bounce off the top and bottom edges of the screen
@@ -134,8 +134,8 @@ public class Panel extends JPanel implements Runnable {
                 boxes[i].invSpedY();
                 colourIndex += 1;
                 boxes[i].changeColour(colours[colourIndex%10]);
-                System.out.println("Box #" + i + " inverted up-down (WALL)");
-                System.out.println("Current colour index: " + colourIndex%10);
+                //System.out.println("Box #" + i + " inverted up-down (WALL)");
+                //System.out.println("Current colour index: " + colourIndex%10);
             }
 
             //Movement Code
