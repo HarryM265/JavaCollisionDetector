@@ -27,7 +27,7 @@ public class Panel extends JPanel implements Runnable {
 
     int startPointer = 0;
 
-    Box bouncer = new Box(bouncingRectStartLoc, bouncingRectStartLoc, bouncingRectWidth, bouncingRectHeight);
+    Box bouncer = new Box(bouncingRectStartLoc, bouncingRectStartLoc, bouncingRectWidth, bouncingRectHeight, bouncingRectSpeedX, bouncingRectSpeedY);
 
     Box[] boxes;
     public Box[] createBoxes() {
@@ -36,16 +36,16 @@ public class Panel extends JPanel implements Runnable {
         int maxX = screenWidth, maxY = screenHeight;
         for (int i = 0; i < boxes.length; i++) {
             int randX = (int) Math.floor(Math.random()*(maxX-minX+1)+minX);
-            int randY = (int) Math.floor(Math.random()*(maxY-minY+1)+minY);;
-            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight);
+            int randY = (int) Math.floor(Math.random()*(maxY-minY+1)+minY);
+            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, bouncingRectSpeedX, bouncingRectSpeedY);
         }
         return boxes;
     }
 
-    int numColours = 10;
+    static int numColours = 10;
 
     public static Color[] createColours() {
-        Color[] Colors = new Color[10];
+        Color[] Colors = new Color[numColours];
         Colors[0] = Color.BLUE;
         Colors[1] = Color.GREEN;
         Colors[2] = Color.ORANGE;
@@ -56,7 +56,6 @@ public class Panel extends JPanel implements Runnable {
         Colors[7] = Color.WHITE;
         Colors[8] = Color.BLACK;
         Colors[9] = Color.CYAN;
-
         return Colors;
     }
     int colourIndex = 0;
@@ -130,6 +129,28 @@ public class Panel extends JPanel implements Runnable {
     }
 
     public void update() {
+        for (int i = 0; i < boxes.length; i++) {
+            // x-axis movement controller
+            //Bounce off the left and right of the screen
+            if (boxes[i].x() < 0 || boxes[i].x() + boxes[i].width() > screenWidth) {
+                boxes[i].invSpedX();
+                colourIndex += 1;
+                System.out.println("Box #" + i + " inverted left-right (WALL)");
+                System.out.println("Current colour index: " + colourIndex%10);
+            }
+            // y-axis movement controller       
+            //Bounce off the top and bottom edges of the screen
+            if (boxes[i].y() < 0 || boxes[i].y() + boxes[i].height() > screenHeight) {
+                boxes[i].invSpedY();
+                colourIndex += 1;
+                System.out.println("Box #" + i + " inverted up-down (WALL)");
+                System.out.println("Current colour index: " + colourIndex%10);
+            }
+
+            //Movement Code
+            boxes[i].moveX();
+            boxes[i].moveY();
+        }
         // x-axis movement controller
         //Bounce off the left and right of the screen
         if (bouncer.x() < 0 || bouncer.x() + bouncer.width() > screenWidth) {
@@ -149,8 +170,8 @@ public class Panel extends JPanel implements Runnable {
         }
 
         //Movement Code
-        bouncer.moveX(bouncingRectSpeedX);
-        bouncer.moveY(bouncingRectSpeedY);
+        bouncer.moveX();
+        bouncer.moveY();
     }
 
     public void paintComponent(Graphics g) {
@@ -160,6 +181,17 @@ public class Panel extends JPanel implements Runnable {
         bouncingRect.setColor(colours[colourIndex % 10]);
 
         bouncingRect.fillRect(bouncer.x(), bouncer.y(), bouncer.width(), bouncer.height());
+
+        Graphics2D box = (Graphics2D)g;
+        for (int i = 0; i < boxes.length; i++) {
+            box.setColor(colours[colourIndex % 10]);
+
+            box.fillRect(boxes[i].x(), boxes[i].y(), boxes[i].width(), boxes[i].height());
+        }
+
+        for (int i = 0; i < boxes.length; i++) {
+            box.dispose();
+        }
 
         // disposal of this graphics context and stop using system resources
         bouncingRect.dispose();

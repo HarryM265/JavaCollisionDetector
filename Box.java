@@ -3,12 +3,16 @@ public class Box {
     private int y;
     private int width;
     private int height;
+    private int speedX;
+    private int speedY;
 
-    public Box(int pX, int pY, int pWidth, int pHeight) {
+    public Box(int pX, int pY, int pWidth, int pHeight, int pSpeedX, int pSpeedY) {
         this.x = pX;
         this.y = pY;
         this.width = pWidth;
         this.height = pHeight;
+        this.speedX = pSpeedX;
+        this.speedY = pSpeedY;
     }
 
     public int x() {
@@ -23,11 +27,24 @@ public class Box {
     public int height() {
         return this.height;
     }
-
-    public void moveX(int pmove) {
-        this.x += pmove;
+    public int spedX() {
+        return this.speedX;
     }
-    public void moveY(int pmove) {
-        this.y += pmove;
+    public int spedY() {
+        return this.speedY;
+    }
+
+    public void invSpedX() {
+        this.speedX *= -1;
+    }
+    public void invSpedY() {
+        this.speedY *= -1;
+    }
+
+    public void moveX() {
+        this.x += this.speedX;
+    }
+    public void moveY() {
+        this.y += this.speedY;
     }
 }
