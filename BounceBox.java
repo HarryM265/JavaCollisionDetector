@@ -43,12 +43,11 @@ public class BounceBox {
     //Current Box Location
 
     public int BoxLeft() {
-        int boxLeft = this.x;
-        return boxLeft;
+        return this.x;
     }
 
     public int BoxRight() {
-        int boxRight = this.x + this.speedX;
+        int boxRight = this.x + this.width;
         return boxRight;
     }
     
@@ -58,8 +57,7 @@ public class BounceBox {
     }
 
     public int BoxTop() {
-        int boxTop = this.y;
-        return boxTop;
+        return this.y;
     }
 
     //Future box location
@@ -82,5 +80,14 @@ public class BounceBox {
     public int FutureBoxTop() {
         int futureBoxTop = this.y + this.speedY;
         return futureBoxTop;
+    }
+
+    public String BoxInfo() {
+        String boxInfo = "Box Top: " + this.BoxTop() +
+                        "\nBox Bottom: " + this.BoxBottom() + 
+                        "\nBoxLeft: " + this.BoxLeft() + 
+                        "\nBox Right: " + this.BoxRight();
+
+        return boxInfo;
     }
 }

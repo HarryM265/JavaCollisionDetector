@@ -40,7 +40,7 @@ public class Panel extends JPanel implements Runnable {
     int bouncingRectSpeedY = screenHeight/160;
     //END REMOVE LATER
 
-    BounceBox bouncer = new BounceBox(screenWidth/20, screenHeight/20, 5, 5, screenWidth/100, screenHeight/160);
+    BounceBox bouncer = new BounceBox(screenWidth/20, screenHeight/20, 5, 5, 1, 1);
 
     //FPS
     int fps = 60;
@@ -99,7 +99,7 @@ public class Panel extends JPanel implements Runnable {
 
             //Print the fps count to the console
             if (timer >= 1000000000) {
-                System.out.println("FPS: " + drawCount);
+                //System.out.println("FPS: " + drawCount);
                 drawCount = 0;
                 timer = 0;
             }
@@ -131,6 +131,7 @@ public class Panel extends JPanel implements Runnable {
 
         // y-axis movement controller
         //If I keep moving in my current Y direction, will I collide with the centre rectangle?
+        /*
         if (
             //If bouncing rect;s right side is past the centre rect;s left side AND
             bouncer.BoxRight() > centreRectX && 
@@ -148,6 +149,27 @@ public class Panel extends JPanel implements Runnable {
         } else if (bouncer.BoxTop() < 0 || bouncer.BoxBottom() > screenHeight) {
             bouncer.invY();
             System.out.println("Inverted up-down (WALL)");
+        } */
+
+        if (
+            //If where the right of bouncing rect is going to be, is greater than the centre rect's left side AND
+            bouncer.FutureBoxBottom() > centreRectY &&
+            //If where the left side of where bouncing rect is going to be, is less than centre rect's right side AND
+            bouncer.FutureBoxTop() < centreRectY + centreRectHeight && 
+            //If the bottom of the bouncing rect is greater than the centre rect's top AND
+            bouncer.BoxRight() > centreRectX && 
+            //If the top of the bouncing rect is less than centre rect's bottom THEN
+            bouncer.BoxLeft() < centreRectX + centreRectWidth
+            ) {
+            //Invert the x-axis movement
+            bouncer.invY();
+            System.out.println("Inverted up-down (BOX)");
+            System.out.println("Width: " + screenWidth + ", Height: " + screenHeight + "\n" + bouncer.BoxInfo());
+        //Bounce off the left and right of the screen
+        } else if (bouncer.BoxTop() <= 0 || bouncer.FutureBoxBottom() >= screenHeight) {
+            bouncer.invY();
+            System.out.println("Inverted up-down (WALL)");
+            System.out.println("Width: " + screenWidth + ", Height: " + screenHeight + "\n" + bouncer.BoxInfo());
         }
 
         //Movement Code
