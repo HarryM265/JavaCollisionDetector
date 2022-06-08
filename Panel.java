@@ -35,7 +35,7 @@ public class Panel extends JPanel implements Runnable {
             int randY = randoNum(0, screenHeight/3);
             int randSpedX = randoNum(1, screenWidth/90);
             int randSpedY = randoNum(1, screenHeight/160);
-            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, randSpedX, randSpedY);
+            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, randSpedX, randSpedY, colours[colourIndex]);
         }
         return boxes;
     }
@@ -133,6 +133,7 @@ public class Panel extends JPanel implements Runnable {
             if (boxes[i].x() < 0 || boxes[i].x() + boxes[i].width() > screenWidth) {
                 boxes[i].invSpedX();
                 colourIndex += 1;
+                boxes[i].changeColour(colours[colourIndex%10]);
                 System.out.println("Box #" + i + " inverted left-right (WALL)");
                 System.out.println("Current colour index: " + colourIndex%10);
             }
@@ -141,6 +142,7 @@ public class Panel extends JPanel implements Runnable {
             if (boxes[i].y() < 0 || boxes[i].y() + boxes[i].height() > screenHeight) {
                 boxes[i].invSpedY();
                 colourIndex += 1;
+                boxes[i].changeColour(colours[colourIndex%10]);
                 System.out.println("Box #" + i + " inverted up-down (WALL)");
                 System.out.println("Current colour index: " + colourIndex%10);
             }
@@ -156,7 +158,7 @@ public class Panel extends JPanel implements Runnable {
 
         Graphics2D box = (Graphics2D)g;
         for (int i = 0; i < boxes.length; i++) {
-            box.setColor(colours[colourIndex % 10]);
+            box.setColor(boxes[i].colour());
 
             box.fillRect(boxes[i].x(), boxes[i].y(), boxes[i].width(), boxes[i].height());
             //box.dispose();

@@ -1,3 +1,4 @@
+import java.awt.Color;
 public class Box {
     private int x;
     private int y;
@@ -5,16 +6,19 @@ public class Box {
     private int height;
     private int speedX;
     private int speedY;
+    private Color colour;
 
-    public Box(int pX, int pY, int pWidth, int pHeight, int pSpeedX, int pSpeedY) {
+    public Box(int pX, int pY, int pWidth, int pHeight, int pSpeedX, int pSpeedY, Color pColour) {
         this.x = pX;
         this.y = pY;
         this.width = pWidth;
         this.height = pHeight;
         this.speedX = pSpeedX;
         this.speedY = pSpeedY;
+        this.colour = pColour;
     }
 
+    //Getters
     public int x() {
         return this.x;
     }
@@ -33,7 +37,11 @@ public class Box {
     public int spedY() {
         return this.speedY;
     }
+    public Color colour() {
+        return this.colour;
+    }
 
+    //Setters
     public void invSpedX() {
         this.speedX *= -1;
     }
@@ -46,5 +54,9 @@ public class Box {
     }
     public void moveY() {
         this.y += this.speedY;
+    }
+
+    public void changeColour(Color pColour) {
+        this.colour = pColour;
     }
 }
