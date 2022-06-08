@@ -16,6 +16,7 @@ public class Panel extends JPanel implements Runnable {
     final int bouncingRectWidth  = screenWidth/14;
     final int bouncingRectHeight = screenHeight/9;
 
+    int cornerCoutner = 0;
     int startPointer = 0;
 
     static int numBoxes = 50000;
@@ -36,7 +37,7 @@ public class Panel extends JPanel implements Runnable {
     Color[] colours;
     public static Color[] createColours() {
         Color[] Colors = new Color[numColours];
-        Colors[0] = Color.BLUE;
+        Colors[0] = Color.BLACK;
         Colors[1] = Color.GREEN;
         Colors[2] = Color.ORANGE;
         Colors[3] = Color.RED;
@@ -44,7 +45,7 @@ public class Panel extends JPanel implements Runnable {
         Colors[5] = Color.PINK;
         Colors[6] = Color.YELLOW;
         Colors[7] = Color.WHITE;
-        Colors[8] = Color.BLACK;
+        Colors[8] = Color.BLUE;
         Colors[9] = Color.CYAN;
         return Colors;
     }
@@ -119,23 +120,34 @@ public class Panel extends JPanel implements Runnable {
 
     public void update() {
         for (int i = 0; i < boxes.length; i++) {
+            //Corner counter
+            if (
+                boxes[i].x()<=0 && boxes[i].y()<=0 || //Top-left Corner
+                boxes[i].x() + boxes[i].width() >= screenWidth && boxes[i].y() <=0 || //Top-right corner
+                boxes[i].x()<=0 && boxes[i].y() + boxes[i].height() >= screenHeight || //Bottom-left corner
+                boxes[i].x() + boxes[i].width() >= screenWidth && boxes[i].y() + boxes[i].height() >= screenHeight
+                ) {
+                cornerCoutner++;
+                System.out.println("Corner count is: " + cornerCoutner);
+            }
+
             // x-axis movement controller
             //Bounce off the left and right of the screen
             if (boxes[i].x() < 0 || boxes[i].x() + boxes[i].width() > screenWidth) {
                 boxes[i].invSpedX();
                 colourIndex += 1;
-                boxes[i].changeColour(colours[colourIndex%10]);
+                boxes[i].changeColour(colours[colourIndex%numColours]);
                 //System.out.println("Box #" + i + " inverted left-right (WALL)");
-                //System.out.println("Current colour index: " + colourIndex%10);
+                //System.out.println("Current colour index: " + colourIndex%numColours);
             }
             // y-axis movement controller       
             //Bounce off the top and bottom edges of the screen
             if (boxes[i].y() < 0 || boxes[i].y() + boxes[i].height() > screenHeight) {
                 boxes[i].invSpedY();
                 colourIndex += 1;
-                boxes[i].changeColour(colours[colourIndex%10]);
+                boxes[i].changeColour(colours[colourIndex%numColours]);
                 //System.out.println("Box #" + i + " inverted up-down (WALL)");
-                //System.out.println("Current colour index: " + colourIndex%10);
+                //System.out.println("Current colour index: " + colourIndex%numColours);
             }
 
             //Movement Code
