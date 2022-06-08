@@ -9,33 +9,44 @@ import javax.swing.plaf.basic.BasicComboBoxUI.KeyHandler;
 
 public class Panel extends JPanel implements Runnable {
 
-    final int screenWidth = 400;
-    final int screenHeight = 400;
+    final int screenWidth = 640;
+    final int screenHeight = 360;
 
     final int halfScreenWidth = (int)(screenWidth/2);
     final int halfScreenHeight = (int)(screenHeight/2);
 
-    //CentreRect dimensions
-    final int centreRectWidth = screenWidth/2;
-    final int centreRectHeight  = screenHeight/3;
-    final int halfCentreRectWidth = (int)(centreRectWidth/2);
-    final int halfCentreRectHeight = (int)(centreRectHeight/2);
-    //CentreRect location
-    int centreRectX = halfScreenWidth - halfCentreRectWidth;
-    int centreRectY = halfScreenHeight - halfCentreRectHeight;
-
     //BouncingRect starting location
     final int bouncingRectStartLoc = 5;
     //BouncingRect dimensions
-    final int bouncingRectWidth  = screenWidth/20;
-    final int bouncingRectHeight = screenHeight/20;
+    final int bouncingRectWidth  = screenWidth/14;
+    final int bouncingRectHeight = screenHeight/9;
     //BouncingRect location
     int bouncingRectX = bouncingRectStartLoc;
     int bouncingRectY = bouncingRectStartLoc;
     
     //Speed of the bouncing rectangle
-    int bouncingRectSpeedX = screenWidth/100;
-    int bouncingRectSpeedY = screenHeight/160;
+    int bouncingRectSpeedX = screenWidth/180;
+    int bouncingRectSpeedY = screenHeight/320;
+
+    int numColours = 10;
+
+    public static Color[] createColours() {
+        Color[] Colors = new Color[10];
+        Colors[0] = Color.BLUE;
+        Colors[1] = Color.GREEN;
+        Colors[2] = Color.ORANGE;
+        Colors[3] = Color.RED;
+        Colors[4] = Color.MAGENTA;
+        Colors[5] = Color.PINK;
+        Colors[6] = Color.YELLOW;
+        Colors[7] = Color.WHITE;
+        Colors[8] = Color.BLACK;
+        Colors[9] = Color.CYAN;
+
+        return Colors;
+    }
+    int colourIndex = 0;
+    
 
     //FPS
     int fps = 60;
@@ -104,45 +115,21 @@ public class Panel extends JPanel implements Runnable {
 
     public void update() {
         // x-axis movement controller
-        //If I keep moving in my current X direction, will I collide with the centre rectangle?
-        if (
-            //If where the right of bouncing rect is going to be, is greater than the centre rect's left side AND
-            bouncingRectX + bouncingRectWidth + bouncingRectSpeedX > centreRectX &&
-            //If where the left side of where bouncing rect is going to be, is less than centre rect's right side AND
-            bouncingRectX + bouncingRectSpeedX < centreRectX + centreRectWidth && 
-            //If the bottom of the bouncing rect is greater than the centre rect's top AND
-            bouncingRectY + bouncingRectHeight > centreRectY && 
-            //If the top of the bouncing rect is less than centre rect's bottom THEN
-            bouncingRectY < centreRectY + centreRectHeight
-            ) {
-            //Invert the x-axis movement
-            bouncingRectSpeedX *= -1;
-            System.out.println("Inverted left-right (BOX)");
         //Bounce off the left and right of the screen
-        } else if (bouncingRectX < 0 || bouncingRectX + bouncingRectWidth > screenWidth) {
+        if (bouncingRectX < 0 || bouncingRectX + bouncingRectWidth > screenWidth) {
             bouncingRectSpeedX *= -1;
+            colourIndex += 1;
             System.out.println("Inverted left-right (WALL)");
+            System.out.println("Current colour index: " + colourIndex%10);
         }
 
-        // y-axis movement controller
-        //If I keep moving in my current Y direction, will I collide with the centre rectangle?
-        if (
-            //If bouncing rect;s right side is past the centre rect;s left side AND
-            bouncingRectX + bouncingRectWidth > centreRectX && 
-            //If bouncing rect's left side is less than centre rect's right side AND
-            bouncingRectX < centreRectX + centreRectWidth && 
-            //If where the bottom of where bouncing rect is going to be, is greater than the centre rect's top AND
-            bouncingRectY + bouncingRectHeight + bouncingRectSpeedY > centreRectY && 
-            //If the top of where the bouncing rect is going to be, is less than centre rect's bottom side THEN
-            bouncingRectY + bouncingRectSpeedY < centreRectY + centreRectHeight
-            ) {
-            //Invert the y-axis movement
-            bouncingRectSpeedY *= -1;
-            System.out.println("Inverted up-down (BOX)");
+        // y-axis movement controller       
         //Bounce off the top and bottom edges of the screen
-        } else if (bouncingRectY < 0 || bouncingRectY + bouncingRectHeight > screenHeight) {
+         if (bouncingRectY < 0 || bouncingRectY + bouncingRectHeight > screenHeight) {
             bouncingRectSpeedY *= -1;
+            colourIndex += 1;
             System.out.println("Inverted up-down (WALL)");
+            System.out.println("Current colour index: " + colourIndex%10);
         }
 
         //Movement Code
@@ -152,19 +139,16 @@ public class Panel extends JPanel implements Runnable {
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-  
-        Graphics2D centreRect = (Graphics2D)g;
-        centreRect.setColor(Color.WHITE);
+        Color[] colours = createColours();
 
-        centreRect.fillRect(centreRectX, centreRectY, centreRectWidth, centreRectHeight);
+        Color currentColor = colours[colourIndex % 10];
 
         Graphics2D bouncingRect = (Graphics2D)g;
-        bouncingRect.setColor(Color.BLACK);
+        bouncingRect.setColor(currentColor);
 
         bouncingRect.fillRect(bouncingRectX, bouncingRectY, bouncingRectWidth, bouncingRectHeight);
 
         // disposal of this graphics context and stop using system resources
-        centreRect.dispose();
         bouncingRect.dispose();
     }
 }
