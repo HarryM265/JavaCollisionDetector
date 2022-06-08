@@ -33,7 +33,9 @@ public class Panel extends JPanel implements Runnable {
         for (int i = 0; i < boxes.length; i++) {
             int randX = randoNum(0, screenWidth/3);
             int randY = randoNum(0, screenHeight/3);
-            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, bouncingRectSpeedX, bouncingRectSpeedY);
+            int randSpedX = randoNum(1, screenWidth/90);
+            int randSpedY = randoNum(1, screenHeight/160);
+            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, randSpedX, randSpedY);
         }
         return boxes;
     }
