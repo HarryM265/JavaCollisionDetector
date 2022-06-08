@@ -27,16 +27,12 @@ public class Panel extends JPanel implements Runnable {
 
     int startPointer = 0;
 
-    Box bouncer = new Box(bouncingRectStartLoc, bouncingRectStartLoc, bouncingRectWidth, bouncingRectHeight, bouncingRectSpeedX, bouncingRectSpeedY);
-
     Box[] boxes;
     public Box[] createBoxes() {
         Box[] boxes = new Box[2];
-        int minX = 0, minY = 0;
-        int maxX = screenWidth, maxY = screenHeight;
         for (int i = 0; i < boxes.length; i++) {
-            int randX = (int) Math.floor(Math.random()*(maxX-minX+1)+minX);
-            int randY = (int) Math.floor(Math.random()*(maxY-minY+1)+minY);
+            int randX = randoNum(0, screenWidth/3);
+            int randY = randoNum(0, screenHeight/3);
             boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, bouncingRectSpeedX, bouncingRectSpeedY);
         }
         return boxes;
@@ -151,42 +147,17 @@ public class Panel extends JPanel implements Runnable {
             boxes[i].moveX();
             boxes[i].moveY();
         }
-        // x-axis movement controller
-        //Bounce off the left and right of the screen
-        if (bouncer.x() < 0 || bouncer.x() + bouncer.width() > screenWidth) {
-            bouncingRectSpeedX *= -1;
-            colourIndex += 1;
-            System.out.println("Inverted left-right (WALL)");
-            System.out.println("Current colour index: " + colourIndex%10);
-        }
-
-        // y-axis movement controller       
-        //Bounce off the top and bottom edges of the screen
-         if (bouncer.y() < 0 || bouncer.y() + bouncer.height() > screenHeight) {
-            bouncingRectSpeedY *= -1;
-            colourIndex += 1;
-            System.out.println("Inverted up-down (WALL)");
-            System.out.println("Current colour index: " + colourIndex%10);
-        }
-
-        //Movement Code
-        bouncer.moveX();
-        bouncer.moveY();
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
-        Graphics2D bouncingRect = (Graphics2D)g;
-        bouncingRect.setColor(colours[colourIndex % 10]);
-
-        bouncingRect.fillRect(bouncer.x(), bouncer.y(), bouncer.width(), bouncer.height());
 
         Graphics2D box = (Graphics2D)g;
         for (int i = 0; i < boxes.length; i++) {
             box.setColor(colours[colourIndex % 10]);
 
             box.fillRect(boxes[i].x(), boxes[i].y(), boxes[i].width(), boxes[i].height());
+            //box.dispose();
         }
 
         for (int i = 0; i < boxes.length; i++) {
@@ -194,6 +165,10 @@ public class Panel extends JPanel implements Runnable {
         }
 
         // disposal of this graphics context and stop using system resources
-        bouncingRect.dispose();
+    }
+
+    public int randoNum (int pMin, int pMax) {
+        int rand = (int) Math.floor(Math.random()*(pMax-pMin+1)+pMin);
+        return rand;
     }
 }
