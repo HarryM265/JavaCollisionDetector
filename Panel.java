@@ -2,10 +2,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-
 import javax.swing.JPanel;
-import javax.swing.plaf.basic.BasicComboBoxUI;
-import javax.swing.plaf.basic.BasicComboBoxUI.KeyHandler;
 
 public class Panel extends JPanel implements Runnable {
 
@@ -52,8 +49,6 @@ public class Panel extends JPanel implements Runnable {
     //FPS
     int fps = 60;
 
-    BasicComboBoxUI bComBoUI = new BasicComboBoxUI();
-    KeyHandler keyH = bComBoUI.new KeyHandler();
     Thread gameThread;
 
     //Set player's default position
@@ -65,8 +60,6 @@ public class Panel extends JPanel implements Runnable {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));// Set the window size
         this.setBackground(Color.GRAY);// Make the background black
         this.setDoubleBuffered(true);// All drawing from this component will be performed on an off-screen painting buffer
-        this.addKeyListener(keyH);
-        this.setFocusable(true);// this game panel can be 'focused' to recieve key input
     }
 
     public void startGameThread() {
