@@ -28,12 +28,19 @@ public class Panel extends JPanel implements Runnable {
     int startPointer = 0;
 
     Box bouncer = new Box(bouncingRectStartLoc, bouncingRectStartLoc, bouncingRectWidth, bouncingRectHeight);
-/*
+
     Box[] boxes;
     public Box[] createBoxes() {
-
+        Box[] boxes = new Box[2];
+        int minX = 0, minY = 0;
+        int maxX = screenWidth, maxY = screenHeight;
+        for (int i = 0; i < boxes.length; i++) {
+            int randX = (int) Math.floor(Math.random()*(maxX-minX+1)+minX);
+            int randY = (int) Math.floor(Math.random()*(maxY-minY+1)+minY);;
+            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight);
+        }
+        return boxes;
     }
-*/
 
     int numColours = 10;
 
@@ -97,6 +104,7 @@ public class Panel extends JPanel implements Runnable {
             //ONLY GEN ONCE
             if (startPointer == 0) {
                 colours = createColours();
+                boxes = createBoxes();
                 startPointer += 1;
             }
 
