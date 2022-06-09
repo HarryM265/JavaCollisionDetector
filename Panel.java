@@ -16,10 +16,9 @@ public class Panel extends JPanel implements Runnable {
     int cornerCounter = 0;
     boolean startPointer = true;
 
-    static int numBoxes = 10;
-    Box[] boxes;
-    public Box[] createBouncers() {
-        boxes = new Box[numBoxes];
+    static int numBoxes = 2;
+    public Box[] createBouncers(int pNumBoxes) {
+        Box[] boxes = new Box[pNumBoxes];
         for (int i = 0; i < boxes.length; i++) {
             int randX = randoNum(0, screenWidth/3);
             int randY = randoNum(0, screenHeight/3);
@@ -33,12 +32,12 @@ public class Panel extends JPanel implements Runnable {
 
     static int numFrameRows = 2;
     static int numFrameCols = 4;
-    Box[] frames;
-    public Box[] createFrames() {
+    Frame[] frames;
+    public Frame[] createFrames() {
         int numFrames = numFrameRows * numFrameCols;
-        Box[] frameArray = new Box[numFrames];
-        int xOffset = screenWidth/100;
-        int yOffset = screenHeight/100;
+        Frame[] frameArray = new Frame[numFrames];
+        int xOffset = screenWidth/64;
+        int yOffset = screenHeight/36;
         int newHeight = (screenHeight/numFrameRows) - (yOffset*2);
         int newWidth = (screenWidth/numFrameCols) - (xOffset*2);
         int currX, currY = 0;
@@ -48,7 +47,8 @@ public class Panel extends JPanel implements Runnable {
             currY += yOffset;
             for (int j = 1; j <= numFrameCols; j++) {
                 currX += xOffset;
-                frameArray[frameCount]= new Box(currX, currY, newWidth, newHeight, 0, 0, Color.GRAY);
+                Box[] bouncers = createBouncers(numBoxes);
+                frameArray[frameCount]= new Frame(currX, currY, newWidth, newHeight, 0, 0, Color.GRAY, bouncers);
                 currX += newWidth + xOffset;
                 frameCount++;
             }
@@ -117,12 +117,13 @@ public class Panel extends JPanel implements Runnable {
 
             //ONLY GEN ONCE
             if (startPointer) {
-                /*colours = createColours();
-                boxes = createBouncers();*/
+                colours = createColours();
                 frames = createFrames();
+                /*
                 for (int i = 0; i < frames.length; i++) {
                     System.out.println("x: " + frames[i].x() + ", y: " + frames[i].y() + "\nHeight: " + frames[i].height() + ", Width: " + frames[i].width());
                 }
+                */
                 startPointer = false;
             }
 
@@ -149,42 +150,45 @@ public class Panel extends JPanel implements Runnable {
     }
 
     public void update() {
-        /*
-        for (int i = 0; i < boxes.length; i++) {
-            //Corner counter
-            if (
-                boxes[i].x()<=0 && boxes[i].y()<=0 || //Top-left Corner
-                boxes[i].x() + boxes[i].width() >= screenWidth && boxes[i].y() <=0 || //Top-right corner
-                boxes[i].x()<=0 && boxes[i].y() + boxes[i].height() >= screenHeight || //Bottom-left corner
-                boxes[i].x() + boxes[i].width() >= screenWidth && boxes[i].y() + boxes[i].height() >= screenHeight //Bottom-right corner
-                ) {
-                cornerCounter++;
-            }
+        
+        for (int i = 0; i < frames.length; i++) {
+            Frame currFrame = frames[i];
+            Box[] currBouncers = currFrame.bouncers();
+            for (int j = 0; j < currBouncers.length; j++) {
+                //Corner counter
+                if (
+                    currBouncers[j].x()<= currFrame.x() && currBouncers[j].y()<=currFrame.x() || //Top-left Corner
+                    currBouncers[j].x() + currBouncers[j].width() >= currFrame.width() && currBouncers[j].y() <=currFrame.x() || //Top-right corner
+                    currBouncers[j].x()<=currFrame.x() && currBouncers[j].y() + currBouncers[j].height() >= currFrame.height() || //Bottom-left corner
+                    currBouncers[j].x() + currBouncers[j].width() >= currFrame.width() && currBouncers[j].y() + currBouncers[j].height() >= currFrame.height() //Bottom-right corner
+                    ) {
+                    cornerCounter++;
+                }
 
-            // x-axis movement controller
-            //Bounce off the left and right of the screen
-            if (boxes[i].x() < 0 || boxes[i].x() + boxes[i].width() > screenWidth) {
-                boxes[i].invSpedX();
-                colourIndex += 1;
-                boxes[i].changeColour(colours[colourIndex%numColours]);
-                //System.out.println("Box #" + i + " inverted left-right (WALL)");
-                //System.out.println("Current colour index: " + colourIndex%numColours);
-            }
-            // y-axis movement controller       
-            //Bounce off the top and bottom edges of the screen
-            if (boxes[i].y() < 0 || boxes[i].y() + boxes[i].height() > screenHeight) {
-                boxes[i].invSpedY();
-                colourIndex += 1;
-                boxes[i].changeColour(colours[colourIndex%numColours]);
-                //System.out.println("Box #" + i + " inverted up-down (WALL)");
-                //System.out.println("Current colour index: " + colourIndex%numColours);
-            }
+                // x-axis movement controller
+                //Bounce off the left and right of the screen
+                if (currBouncers[j].x() < currFrame.x() || currBouncers[j].x() + currBouncers[j].width() > currFrame.width()) {
+                    currBouncers[j].invSpedX();
+                    colourIndex += 1;
+                    currBouncers[j].changeColour(colours[colourIndex%numColours]);
+                    //System.out.println("Box #" + i + " inverted left-right (WALL)");
+                    //System.out.println("Current colour index: " + colourIndex%numColours);
+                }
+                // y-axis movement controller       
+                //Bounce off the top and bottom edges of the screen
+                if (currBouncers[j].y() < currFrame.x() || currBouncers[j].y() + currBouncers[j].height() > currFrame.height()) {
+                    currBouncers[j].invSpedY();
+                    colourIndex += 1;
+                    currBouncers[j].changeColour(colours[colourIndex%numColours]);
+                    //System.out.println("Box #" + i + " inverted up-down (WALL)");
+                    //System.out.println("Current colour index: " + colourIndex%numColours);
+                }
 
-            //Movement Code
-            boxes[i].moveX();
-            boxes[i].moveY();
+                //Movement Code
+                currBouncers[j].moveX();
+                currBouncers[j].moveY();
+            }
         }
-        */
     }
 
     public void paintComponent(Graphics g) {
@@ -192,9 +196,9 @@ public class Panel extends JPanel implements Runnable {
         /*
         Graphics2D box = (Graphics2D)g;
         for (int i = 0; i < boxes.length; i++) {
-            box.setColor(boxes[i].colour());
+            x.setColor(boxes[i].colour());
 
-            box.fillRect(boxes[i].x(), boxes[i].y(), boxes[i].width(), boxes[i].height());
+            box.fillRect(boxes[i].xbo(), boxes[i].y(), boxes[i].width(), boxes[i].height());
             //box.dispose();
         }
 
@@ -209,6 +213,18 @@ public class Panel extends JPanel implements Runnable {
             frame.setColor(frames[i].colour());
 
             frame.fillRect(frames[i].x(), frames[i].y(), frames[i].width(), frames[i].height());
+            Frame currentFrame = frames[i];
+            Box[] currentBouncers = currentFrame.bouncers();
+            Graphics2D box = null;
+            for (int j = 0; j < currentBouncers.length; j++) {
+                box = (Graphics2D)g;
+                box.setColor(currentBouncers[i].colour());
+
+                box.fillRect(currentBouncers[i].x(), currentBouncers[i].y(), currentBouncers[i].width(), currentBouncers[i].height());
+            }
+            for (int j = 0; j < currentBouncers.length; j++) {
+                box.dispose();
+            }
         }
         for (int i = 0; i < frames.length; i++) {
             frame.dispose();
