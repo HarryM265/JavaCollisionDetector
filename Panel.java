@@ -9,9 +9,6 @@ public class Panel extends JPanel implements Runnable {
     final int screenWidth = 640;
     final int screenHeight = 360;
 
-    final int halfScreenWidth = (int)(screenWidth/2);
-    final int halfScreenHeight = (int)(screenHeight/2);
-
     //BouncingRect dimensions
     final int bouncingRectWidth  = screenWidth/14;
     final int bouncingRectHeight = screenHeight/9;
@@ -21,8 +18,8 @@ public class Panel extends JPanel implements Runnable {
 
     static int numBoxes = 10;
     Box[] boxes;
-    public Box[] createBoxes() {
-        Box[] boxes = new Box[numBoxes];
+    public Box[] createBouncers() {
+        boxes = new Box[numBoxes];
         for (int i = 0; i < boxes.length; i++) {
             int randX = randoNum(0, screenWidth/3);
             int randY = randoNum(0, screenHeight/3);
@@ -32,6 +29,32 @@ public class Panel extends JPanel implements Runnable {
             boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, randSpedX, randSpedY, colours[randColourI]);
         }
         return boxes;
+    }
+
+    static int numFrameRows = 2;
+    static int numFrameCols = 4;
+    Box[] frames;
+    public Box[] createFrames() {
+        int numFrames = numFrameRows * numFrameCols;
+        Box[] frameArray = new Box[numFrames];
+        int xOffset = screenWidth/100;
+        int yOffset = screenHeight/100;
+        int newHeight = (screenHeight/numFrameRows) - (yOffset*2);
+        int newWidth = (screenWidth/numFrameCols) - (xOffset*2);
+        int currX, currY = 0;
+        int frameCount = 0;
+        for (int i = 1; i <= numFrameRows; i++) {
+            currX = 0;
+            currY += yOffset;
+            for (int j = 1; j <= numFrameCols; j++) {
+                currX += xOffset;
+                frameArray[frameCount]= new Box(currX, currY, newWidth, newHeight, 0, 0, Color.GRAY);
+                currX += newWidth + xOffset;
+                frameCount++;
+            }
+            currY += newHeight + yOffset;
+        }
+        return frameArray;
     }
 
     static int numColours = 10;
@@ -62,9 +85,10 @@ public class Panel extends JPanel implements Runnable {
     int playerY = 100;
     int playerSpeed = 4;
 
+    //Make background
     public Panel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));// Set the window size
-        this.setBackground(Color.GRAY);// Make the background black
+        this.setBackground(Color.BLACK);// Make the background black
         this.setDoubleBuffered(true);// All drawing from this component will be performed on an off-screen painting buffer
     }
 
@@ -93,8 +117,12 @@ public class Panel extends JPanel implements Runnable {
 
             //ONLY GEN ONCE
             if (startPointer) {
-                colours = createColours();
-                boxes = createBoxes();
+                /*colours = createColours();
+                boxes = createBouncers();*/
+                frames = createFrames();
+                for (int i = 0; i < frames.length; i++) {
+                    System.out.println("x: " + frames[i].x() + ", y: " + frames[i].y() + "\nHeight: " + frames[i].height() + ", Width: " + frames[i].width());
+                }
                 startPointer = false;
             }
 
@@ -121,6 +149,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     public void update() {
+        /*
         for (int i = 0; i < boxes.length; i++) {
             //Corner counter
             if (
@@ -155,11 +184,12 @@ public class Panel extends JPanel implements Runnable {
             boxes[i].moveX();
             boxes[i].moveY();
         }
+        */
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+        /*
         Graphics2D box = (Graphics2D)g;
         for (int i = 0; i < boxes.length; i++) {
             box.setColor(boxes[i].colour());
@@ -173,6 +203,16 @@ public class Panel extends JPanel implements Runnable {
         }
 
         // disposal of this graphics context and stop using system resources
+        */
+        Graphics2D frame = (Graphics2D)g;
+        for (int i = 0; i < frames.length; i++) {
+            frame.setColor(frames[i].colour());
+
+            frame.fillRect(frames[i].x(), frames[i].y(), frames[i].width(), frames[i].height());
+        }
+        for (int i = 0; i < frames.length; i++) {
+            frame.dispose();
+        }
     }
 
     public int randoNum (int pMin, int pMax) {
