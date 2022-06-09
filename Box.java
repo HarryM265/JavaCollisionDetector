@@ -8,6 +8,7 @@ public class Box {
     private int speedY;
     private Color colour;
 
+    //Parameters Constructor
     public Box(int pX, int pY, int pWidth, int pHeight, int pSpeedX, int pSpeedY, Color pColour) {
         this.x = pX;
         this.y = pY;
@@ -16,6 +17,16 @@ public class Box {
         this.speedX = pSpeedX;
         this.speedY = pSpeedY;
         this.colour = pColour;
+    }
+    //Copy constructor
+    public Box(Box pBox) {
+        this.x = pBox.x();
+        this.y = pBox.y();
+        this.width = pBox.width();
+        this.height = pBox.height();
+        this.speedX = pBox.spedX();
+        this.speedY = pBox.spedY();
+        this.colour = pBox.colour();
     }
 
     //Getters
@@ -49,6 +60,13 @@ public class Box {
         this.speedY *= -1;
     }
 
+    public void setSpedX(int pSped) {
+        this.speedX = pSped;
+    }
+    public void setSpedY(int pSped) {
+        this.speedY = pSped;
+    }
+
     public void moveX() {
         this.x += this.speedX;
     }
@@ -58,5 +76,13 @@ public class Box {
 
     public void changeColour(Color pColour) {
         this.colour = pColour;
+    }
+
+    public String boxInfo() {
+        String boxInfo = "x: " + this.x +
+                        "\ny: " + this.y +
+                        "\nspeed x: " + this.speedX + 
+                        "\nspeed y: " + this.speedY;
+        return boxInfo;
     }
 }

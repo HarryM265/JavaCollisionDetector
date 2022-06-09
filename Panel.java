@@ -16,10 +16,10 @@ public class Panel extends JPanel implements Runnable {
     final int bouncingRectWidth  = screenWidth/14;
     final int bouncingRectHeight = screenHeight/9;
 
-    int cornerCoutner = 0;
-    int startPointer = 0;
+    int cornerCounter = 0;
+    boolean startPointer = true;
 
-    static int numBoxes = 50000;
+    static int numBoxes = 10;
     Box[] boxes;
     public Box[] createBoxes() {
         Box[] boxes = new Box[numBoxes];
@@ -28,7 +28,8 @@ public class Panel extends JPanel implements Runnable {
             int randY = randoNum(0, screenHeight/3);
             int randSpedX = randoNum(1, screenWidth/90);
             int randSpedY = randoNum(1, screenHeight/160);
-            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, randSpedX, randSpedY, colours[colourIndex]);
+            int randColourI = randoNum(0, numColours -1);
+            boxes[i] = new Box(randX, randY, bouncingRectWidth, bouncingRectHeight, randSpedX, randSpedY, colours[randColourI]);
         }
         return boxes;
     }
@@ -91,10 +92,10 @@ public class Panel extends JPanel implements Runnable {
             lastTime = currentTime;
 
             //ONLY GEN ONCE
-            if (startPointer == 0) {
+            if (startPointer) {
                 colours = createColours();
                 boxes = createBoxes();
-                startPointer += 1;
+                startPointer = false;
             }
 
             //When delta reaches the draw interval, draw and update, then reset the delta
@@ -111,6 +112,7 @@ public class Panel extends JPanel implements Runnable {
             //Print the fps count to the console
             if (timer >= 1000000000) {
                 System.out.println("FPS: " + drawCount);
+                System.out.println("# of corners: " + cornerCounter);
                 drawCount = 0;
                 timer = 0;
             }
@@ -125,10 +127,9 @@ public class Panel extends JPanel implements Runnable {
                 boxes[i].x()<=0 && boxes[i].y()<=0 || //Top-left Corner
                 boxes[i].x() + boxes[i].width() >= screenWidth && boxes[i].y() <=0 || //Top-right corner
                 boxes[i].x()<=0 && boxes[i].y() + boxes[i].height() >= screenHeight || //Bottom-left corner
-                boxes[i].x() + boxes[i].width() >= screenWidth && boxes[i].y() + boxes[i].height() >= screenHeight
+                boxes[i].x() + boxes[i].width() >= screenWidth && boxes[i].y() + boxes[i].height() >= screenHeight //Bottom-right corner
                 ) {
-                cornerCoutner++;
-                System.out.println("Corner count is: " + cornerCoutner);
+                cornerCounter++;
             }
 
             // x-axis movement controller
