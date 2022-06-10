@@ -19,7 +19,7 @@ public class Panel extends JPanel implements Runnable {
     int cornerCounter = 0;
     boolean startPointer = true;
 
-    static int numBoxes = 10;
+    static int numBoxes = 100;
     Box[] boxes;
     public Box[] createBoxes() {
         Box[] boxes = new Box[numBoxes];
