@@ -6,7 +6,7 @@ public class Main {
         JFrame window = new JFrame();
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
-        window.setTitle("Collision Detector");
+        window.setTitle("Sierpinski's Triangle");
 
         Panel gamePanel = new Panel();
         window.add(gamePanel);// Adds the game panel to the current window as a component

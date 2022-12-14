@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.Random;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.plaf.basic.BasicComboBoxUI;
@@ -9,33 +11,47 @@ import javax.swing.plaf.basic.BasicComboBoxUI.KeyHandler;
 
 public class Panel extends JPanel implements Runnable {
 
-    final int screenWidth = 400;
-    final int screenHeight = 400;
+    final int screenWidth = 1000;
+    final int screenHeight = 1000;
 
     final int halfScreenWidth = (int)(screenWidth/2);
     final int halfScreenHeight = (int)(screenHeight/2);
 
-    //CentreRect dimensions
-    final int centreRectWidth = screenWidth/2;
-    final int centreRectHeight  = screenHeight/3;
-    final int halfCentreRectWidth = (int)(centreRectWidth/2);
-    final int halfCentreRectHeight = (int)(centreRectHeight/2);
-    //CentreRect location
-    int centreRectX = halfScreenWidth - halfCentreRectWidth;
-    int centreRectY = halfScreenHeight - halfCentreRectHeight;
+    //Point size
+    final int pDimens = 5;
+    final int pWidth = pDimens;
+    final int pHeight = pDimens;
 
-    //BouncingRect starting location
-    final int bouncingRectStartLoc = 5;
-    //BouncingRect dimensions
-    final int bouncingRectWidth  = screenWidth/20;
-    final int bouncingRectHeight = screenHeight/20;
-    //BouncingRect location
-    int bouncingRectX = bouncingRectStartLoc;
-    int bouncingRectY = bouncingRectStartLoc;
-    
-    //Speed of the bouncing rectangle
-    int bouncingRectSpeedX = screenWidth/100;
-    int bouncingRectSpeedY = screenHeight/160;
+    //First point
+    final int randPointX = 556;
+    final int randPointY = 424;
+
+    Point startP = new Point(randPointX, randPointY);
+    Point nextP = new Point(randPointX, randPointY);
+
+    //Boolean to use random point from ui
+    boolean isFirstDraw = true;
+
+    //Number of points
+    final int numPoints = 3;
+
+    //p1 Location
+    final int p1x = halfScreenWidth;
+    final int p1y = halfScreenHeight/8;
+
+    //p2 Location
+    final int p2x = halfScreenWidth/4;
+    final int p2y = (screenHeight/8) * 7;
+
+    //p3 Location
+    final int p3x = (halfScreenWidth * 3) /4 + halfScreenWidth;
+    final int p3y = ((screenHeight * 7)/8);
+
+    //Triangle points array (array literal)
+    Point[] tPoints = new Point[]{new Point(p1x, p1y), new Point(p2x, p2y), new Point(p3x, p3y)};
+
+    //Found points
+    ArrayList<Point> foundPoints = new ArrayList<Point>();
 
     //FPS
     int fps = 60;
@@ -95,6 +111,7 @@ public class Panel extends JPanel implements Runnable {
             //Print the fps count to the console
             if (timer >= 1000000000) {
                 System.out.println("FPS: " + drawCount);
+                System.out.println("Random Number is: " + randChoice(numPoints));
                 drawCount = 0;
                 timer = 0;
             }
@@ -103,50 +120,100 @@ public class Panel extends JPanel implements Runnable {
     }
 
     public void update() {
-        // x-axis movement controller
-        //If I keep moving in my current X direction, will I collide with the centre rectangle?
-        if (bouncingRectX + bouncingRectWidth + bouncingRectSpeedX > centreRectX && 
-            bouncingRectX + bouncingRectSpeedX < centreRectX + centreRectWidth && 
-            bouncingRectY + bouncingRectHeight > centreRectY && 
-            bouncingRectY < centreRectY + centreRectHeight) {
-            bouncingRectSpeedX *= -1;
-        //Bounce off the left and right of the screen
-        } else if (bouncingRectX < 0 || bouncingRectX + bouncingRectWidth > screenWidth) {
-            bouncingRectSpeedX *= -1;
+
+        //Starting point
+        Point triangP; //NEED TO MAKE p1-p3 an array so I can select at random
+        int deltaX, deltaY;
+
+        if (isFirstDraw) {
+            startP.setX(randPointX);
+            startP.setY(randPointY);
+            isFirstDraw = false;
+        } else {
+            startP.setX(nextP.getX());
+            startP.setY(nextP.getY());
         }
 
-        // y-axis movement controller
-        //If I keep moving in my current Y direction, will I collide with the centre rectangle?
-        if (bouncingRectX + bouncingRectWidth > centreRectX && 
-            bouncingRectX < centreRectX + centreRectWidth && 
-            bouncingRectY + bouncingRectHeight + bouncingRectSpeedY > centreRectY && 
-            bouncingRectY + bouncingRectSpeedY < centreRectY + centreRectHeight) {
-            bouncingRectSpeedY *= -1;
-        //Bounce off the top and bottom edges of the screen
-        } else if (bouncingRectY < 0 || bouncingRectY + bouncingRectHeight > screenHeight) {
-            bouncingRectSpeedY *= -1;
-        }
+        triangP = tPoints[randChoice(numPoints)-1]; //Choose a vertex
 
-        //Movement Code
-        bouncingRectX += bouncingRectSpeedX;
-        bouncingRectY += bouncingRectSpeedY;
+        deltaX = startP.getX() - triangP.getX(); //find the difference in x coords
+        deltaY = startP.getY() - triangP.getY(); //find the difference in y coords
+        
+        nextP.setX(startP.getX() + (int)(0.5*deltaX)); //Move the next point X to half the delta away
+        nextP.setY(startP.getY() + (int)(0.5*deltaY)); //Move the next point Y to half the delta away
+
+        foundPoints.add(nextP);
+        System.out.println("Found point is: " + nextP.pointToString());
     }
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-  
-        Graphics2D centreRect = (Graphics2D)g;
-        centreRect.setColor(Color.WHITE);
 
-        centreRect.fillRect(centreRectX, centreRectY, centreRectWidth, centreRectHeight);
+        //ArrayList of triangle point graphics
+        ArrayList<Graphics2D> tps = new ArrayList<Graphics2D>();
 
-        Graphics2D bouncingRect = (Graphics2D)g;
-        bouncingRect.setColor(Color.BLACK);
+        //Draw all traingle points
+        for (int i = 0; i < tPoints.length; i++) {
+            tps.add((Graphics2D)g);
+            tps.get(i).setColor(Color.BLACK);
+            tps.get(i).fillRect(tPoints[i].getX(), tPoints[i].getY(), pWidth, pHeight);
+        }
 
-        bouncingRect.fillRect(bouncingRectX, bouncingRectY, bouncingRectWidth, bouncingRectHeight);
+        Graphics2D randPoint = (Graphics2D)g;
+        randPoint.setColor(Color.BLACK);
+        randPoint.fillRect(randPointX, randPointY, pWidth, pHeight);
 
-        // disposal of this graphics context and stop using system resources
-        centreRect.dispose();
-        bouncingRect.dispose();
+        //ArrayList of found point graphics
+        ArrayList<Graphics2D> ps = new ArrayList<Graphics2D>();
+
+        //Draw all found points
+        for (int i = 0; i < foundPoints.size(); i++) {
+            ps.add((Graphics2D)g);
+            Point currP = foundPoints.get(i);//Can be moved onto the same line
+            ps.get(i).setColor(Color.BLACK);
+            ps.get(i).fillRect(currP.getX(), currP.getY(), pWidth, pHeight);
+        }
+
+        randPoint.dispose();
+
+        //Dispose of all graphics content on tPoints (Triangle points)
+        for (int i = 0; i < tPoints.length; i++) {
+            tps.get(i).dispose();
+        }
+
+        //Dispose of all graphics on ps (found points)
+        for (int i = 0; i < ps.size(); i++) {
+            ps.get(i).dispose();
+        }
+    }
+
+    //Pick a random outcome from the 1 and the parameter
+    public static int randChoice(int max) {
+        int result;
+
+        Random rand = new Random(); // Instance of random class
+
+        //Generate result
+        result = rand.nextInt(max);
+
+        return result +1;
+    }
+
+    //Find the distance between two points
+    public static int distanceOf2Points(int x1, int y1, int x2, int y2) {
+        int result = (int)(Math.sqrt((y2 - y1) * (y2 - y1) + (x2 - x1) * (x2 - x1)));
+
+        return result;
+    }
+
+    //Subtracy less value from more value
+    public static int subLessFromMore(int p1, int p2) {
+        int r;
+        if (p1 > p2) {
+            r = p1-p2;
+        } else {
+            r = p2 - p1;
+        }
+        return r;
     }
 }
