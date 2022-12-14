@@ -11,16 +11,16 @@ import javax.swing.plaf.basic.BasicComboBoxUI.KeyHandler;
 
 public class Panel extends JPanel implements Runnable {
 
-    final int screenWidth = 1000;
-    final int screenHeight = 1000;
+    final int screenWidth = 500;
+    final int screenHeight = 500;
 
     final int halfScreenWidth = (int)(screenWidth/2);
     final int halfScreenHeight = (int)(screenHeight/2);
 
     //Point size
     final int pDimens = 5;
-    final int pWidth = pDimens;
-    final int pHeight = pDimens;
+    final int pWidth = 20;
+    final int pHeight = 20;
 
     //First point
     final int randPointX = 556;
@@ -136,11 +136,25 @@ public class Panel extends JPanel implements Runnable {
 
         triangP = tPoints[randChoice(numPoints)-1]; //Choose a vertex
 
-        deltaX = startP.getX() - triangP.getX(); //find the difference in x coords
-        deltaY = startP.getY() - triangP.getY(); //find the difference in y coords
+        deltaX = subLessFromMore(startP.getX(), triangP.getX()); //find the difference in x coords
+        deltaY = subLessFromMore(startP.getY(), triangP.getY()); //find the difference in y coords
         
-        nextP.setX(startP.getX() + (int)(0.5*deltaX)); //Move the next point X to half the delta away
-        nextP.setY(startP.getY() + (int)(0.5*deltaY)); //Move the next point Y to half the delta away
+        //Find next point location x value
+        if (triangP.getX() > startP.getX()) {
+            nextP.setX(startP.getX() + (int)(0.5*deltaX));
+        } else {
+            nextP.setX(startP.getX() - (int)(0.5*deltaX));
+        }
+
+        //Find next point location y value
+        if (triangP.getY() > startP.getY()) {
+            nextP.setY(startP.getY() + (int)(0.5*deltaY));
+        } else {
+            nextP.setY(startP.getY() - (int)(0.5*deltaY));
+        }
+
+        //nextP.setX(startP.getX() + (int)(0.5*deltaX)); //Move the next point X to half the delta away
+        //nextP.setY(startP.getY() + (int)(0.5*deltaY)); //Move the next point Y to half the delta away
 
         foundPoints.add(nextP);
         System.out.println("Found point is: " + nextP.pointToString());
@@ -156,12 +170,12 @@ public class Panel extends JPanel implements Runnable {
         for (int i = 0; i < tPoints.length; i++) {
             tps.add((Graphics2D)g);
             tps.get(i).setColor(Color.BLACK);
-            tps.get(i).fillRect(tPoints[i].getX(), tPoints[i].getY(), pWidth, pHeight);
+            tps.get(i).fillRect(tPoints[i].getX(), tPoints[i].getY(), pDimens, pDimens);
         }
 
         Graphics2D randPoint = (Graphics2D)g;
         randPoint.setColor(Color.BLACK);
-        randPoint.fillRect(randPointX, randPointY, pWidth, pHeight);
+        randPoint.fillRect(randPointX, randPointY, pDimens, pDimens);
 
         //ArrayList of found point graphics
         ArrayList<Graphics2D> ps = new ArrayList<Graphics2D>();
@@ -206,7 +220,7 @@ public class Panel extends JPanel implements Runnable {
         return result;
     }
 
-    //Subtracy less value from more value
+    //Subtract less value from more value
     public static int subLessFromMore(int p1, int p2) {
         int r;
         if (p1 > p2) {
