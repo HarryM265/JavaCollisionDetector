@@ -128,10 +128,10 @@ public class Panel extends JPanel implements Runnable {
 
     public void update() {
 
-        //Starting point
-        Point triangP; //NEED TO MAKE p1-p3 an array so I can select at random
-        int deltaX, deltaY;
+        Point triangP; // Trangle points
+        int deltaX, deltaY; //difference between current point and chosen triangle point
 
+        //set first point to UI point
         if (isFirstDraw) {
             startP.setX(randPointX);
             startP.setY(randPointY);
