@@ -111,7 +111,14 @@ public class Panel extends JPanel implements Runnable {
             //Print the fps count to the console
             if (timer >= 1000000000) {
                 System.out.println("FPS: " + drawCount);
-                System.out.println("Random Number is: " + randChoice(numPoints));
+                System.out.println("Found Points:");
+
+                //TODO Testing code
+                for (int i = 0; i < foundPoints.size(); i++) {
+                    System.out.println(foundPoints.get(i).pointToString());
+                }
+
+                //System.out.println("Random Number is: " + randChoice(numPoints));
                 drawCount = 0;
                 timer = 0;
             }
@@ -157,7 +164,7 @@ public class Panel extends JPanel implements Runnable {
         //nextP.setY(startP.getY() + (int)(0.5*deltaY)); //Move the next point Y to half the delta away
 
         foundPoints.add(nextP);
-        System.out.println("Found point is: " + nextP.pointToString());
+        //System.out.println("Found point is: " + nextP.pointToString());
     }
 
     public void paintComponent(Graphics g) {
@@ -176,16 +183,18 @@ public class Panel extends JPanel implements Runnable {
         Graphics2D randPoint = (Graphics2D)g;
         randPoint.setColor(Color.BLACK);
         randPoint.fillRect(randPointX, randPointY, pDimens, pDimens);
-
+        
         //ArrayList of found point graphics
         ArrayList<Graphics2D> ps = new ArrayList<Graphics2D>();
 
         //Draw all found points
+        System.out.println("Current points are: ");
         for (int i = 0; i < foundPoints.size(); i++) {
             ps.add((Graphics2D)g);
-            Point currP = foundPoints.get(i);//Can be moved onto the same line
+            Point currP = foundPoints.get((i));//Can be moved onto the same line
             ps.get(i).setColor(Color.BLACK);
             ps.get(i).fillRect(currP.getX(), currP.getY(), pWidth, pHeight);
+            System.out.println(currP.pointToString());
         }
 
         randPoint.dispose();
