@@ -16,9 +16,16 @@ public class Point {
         return y;
     }
 
+    //Parameters constructor
     public Point(int pX, int pY) {
         x = pX;
         y = pY;
+    }
+
+    //Default constructor
+    public Point() {
+        x = 500;
+        y= 500;
     }
 
     public String pointToString() {

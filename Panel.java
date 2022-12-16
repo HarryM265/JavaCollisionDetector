@@ -26,8 +26,8 @@ public class Panel extends JPanel implements Runnable {
     final int randPointX = 556;
     final int randPointY = 424;
 
-    Point startP = new Point(randPointX, randPointY);
-    Point nextP = new Point(randPointX, randPointY);
+    Point startP = new Point();
+    Point nextP = new Point();
 
     //Boolean to use random point from ui
     boolean isFirstDraw = true;
@@ -159,9 +159,6 @@ public class Panel extends JPanel implements Runnable {
         } else {
             nextP.setY(startP.getY() - (int)(0.5*deltaY));
         }
-
-        //nextP.setX(startP.getX() + (int)(0.5*deltaX)); //Move the next point X to half the delta away
-        //nextP.setY(startP.getY() + (int)(0.5*deltaY)); //Move the next point Y to half the delta away
 
         foundPoints.add(nextP);
         //System.out.println("Found point is: " + nextP.pointToString());
