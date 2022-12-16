@@ -113,7 +113,7 @@ public class Panel extends JPanel implements Runnable {
                 System.out.println("FPS: " + drawCount);
                 System.out.println("Found Points:");
 
-                //TODO Testing code
+                //TODO Testing found points print code
                 for (int i = 0; i < foundPoints.size(); i++) {
                     System.out.println(foundPoints.get(i).pointToString());
                 }
@@ -130,6 +130,7 @@ public class Panel extends JPanel implements Runnable {
 
         Point triangP; // Trangle points
         int deltaX, deltaY; //difference between current point and chosen triangle point
+        int chosenPoint; //Chosen triangle point ID
 
         //set first point to UI point
         if (isFirstDraw) {
@@ -141,6 +142,8 @@ public class Panel extends JPanel implements Runnable {
             startP.setY(nextP.getY());
         }
 
+        chosenPoint = randChoice(numPoints-1);
+        System.out.println("Chosen point is: " + chosenPoint); //TODO testing random choice code
         triangP = tPoints[randChoice(numPoints)-1]; //Choose a vertex
 
         deltaX = subLessFromMore(startP.getX(), triangP.getX()); //find the difference in x coords
